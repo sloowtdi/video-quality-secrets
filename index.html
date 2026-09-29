@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Video Clarity Secrets - Cover</title>
+
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, "Segoe UI", sans-serif;
+  }
+
+  body {
+    background: #0b0b14;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .cover-page {
+    width: 210mm;
+    height: 297mm;
+    background: linear-gradient(160deg, #0F3460 0%, #16213E 100%);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 16mm;
+    text-align: center;
+    overflow: hidden;
+  }
+
+  .icon {
+    font-size: 42px;
+    margin-bottom: 8px;
+  }
+
+  h1 {
+    font-size: 36px;
+    line-height: 1.05;
+    letter-spacing: 1px;
+    font-weight: 800;
+    margin-bottom: 10px;
+  }
+
+  .subtitle {
+    font-size: 14px;
+    line-height: 1.5;
+    color: #b8c9e6;
+    margin-bottom: 16px;
+  }
+
+  .compare-box {
+    position: relative;
+    width: 112mm;
+    aspect-ratio: 590 / 1004;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 20px 45px rgba(0,0,0,0.45);
+    cursor: ew-resize;
+    user-select: none;
+    touch-action: none;
+    background: #111;
+  }
+
+  .compare-box img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+    /* This crops both images evenly */
+    object-fit: cover;
+    object-position: center;
+
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .after-img {
+    z-index: 1;
+  }
+
+  .before-img {
+    z-index: 2;
+
+    /* Shows BEFORE on left side at 50% */
+    clip-path: inset(0 50% 0 0);
+  }
+
+  .divider {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 3px;
+    height: 100%;
+    background: white;
+    z-index: 5;
+    transform: translateX(-50%);
+  }
+
+  .handle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 46px;
+    height: 46px;
+    background: white;
+    border-radius: 50%;
+    z-index: 6;
+    transform: translate(-50%, -50%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #0F3460;
+    font-size: 22px;
+    font-weight: bold;
+    box-shadow: 0 5px 18px rgba(0,0,0,0.4);
+  }
+
+  .label {
+    position: absolute;
+    bottom: 14px;
+    z-index: 7;
+    background: rgba(0,0,0,0.68);
+    color: white;
+    padding: 6px 15px;
+    border-radius: 30px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1px;
+  }
+
+  .label.before {
+    left: 14px;
+  }
+
+  .label.after {
+    right: 14px;
+  }
+
+  .drag-text {
+    margin-top: 12px;
+    font-size: 12px;
+    color: #b8c9e6;
+  }
+
+  .handle-name {
+    margin-top: auto;
+    font-size: 15px;
+    color: #00D9FF;
+    font-weight: 700;
+  }
+
+  @media screen and (max-width: 700px) {
+    body {
+      align-items: flex-start;
+      background: #16213E;
+    }
+
+    .cover-page {
+      width: 100vw;
+      min-height: 100vh;
+      height: auto;
+      padding: 22px;
+    }
+
+    h1 {
+      font-size: 32px;
+    }
+
+    .compare-box {
+      width: 90vw;
+      max-width: 430px;
+    }
+  }
+</style>
+</head>
+
+<body>
+
+<div class="cover-page">
+
+  <div class="icon">🎬</div>
+
+  <h1>VIDEO CLARITY<br>SECRETS</h1>
+
+  <div class="subtitle">
+    Turn Blurry Phone Videos into HD Quality<br>
+    Using Only CapCut
+  </div>
+
+  <div class="compare-box" id="compareBox">
+
+    <!-- AFTER image stays full background -->
+    <img src="after.jpg" class="after-img" alt="After">
+
+    <!-- BEFORE image is placed on top and gets revealed by slider -->
+    <img src="before.jpg" class="before-img" id="beforeImg" alt="Before">
+
+    <div class="divider" id="divider"></div>
+    <div class="handle" id="handle">↔</div>
+
+    <div class="label before">BEFORE</div>
+    <div class="label after">AFTER</div>
+
+  </div>
+
+  <div class="drag-text">Drag left/right to compare</div>
+
+  <div class="handle-name">@sloow_tdi</div>
+
+</div>
+
+<script>
+  const compareBox = document.getElementById("compareBox");
+  const beforeImg = document.getElementById("beforeImg");
+  const divider = document.getElementById("divider");
+  const handle = document.getElementById("handle");
+
+  function moveSlider(clientX) {
+    const rect = compareBox.getBoundingClientRect();
+    let x = clientX - rect.left;
+    let percent = (x / rect.width) * 100;
+
+    if (percent < 0) percent = 0;
+    if (percent > 100) percent = 100;
+
+    beforeImg.style.clipPath = "inset(0 " + (100 - percent) + "% 0 0)";
+    divider.style.left = percent + "%";
+    handle.style.left = percent + "%";
+  }
+
+  compareBox.addEventListener("pointerdown", function(e) {
+    moveSlider(e.clientX);
+    compareBox.setPointerCapture(e.pointerId);
+  });
+
+  compareBox.addEventListener("pointermove", function(e) {
+    if (e.buttons === 1 || e.pointerType === "touch") {
+      moveSlider(e.clientX);
+    }
+  });
+
+  compareBox.addEventListener("click", function(e) {
+    moveSlider(e.clientX);
+  });
+</script>
+
+</body>
+</html>
